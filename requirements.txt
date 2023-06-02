@@ -1,2 +1,6 @@
-requests
 mypy
+openai
+requests
+pytesseract
+pdf2image
+python-dotenv
