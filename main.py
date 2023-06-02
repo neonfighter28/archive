@@ -1,32 +1,42 @@
-import requests
-import sys
-import html
+"""
+Author: Elias Csuka
+Date: 02/06/2023
 
-if sys.argv[1]:
-    filename = sys.argv[1]
-else:
-    print("No filename given")
-    sys.exit()
+Description:
 
-URL = (
-    "https://translate.googleapis.com/language/translate/v2"
-)
+"""
 
-PARAMS = {
-    "key" : "AIzaSyA9eZzr0CDXIYSoi5NmyC6UtApu_nDaekA",
-    "source" : "de",
-    "target": "en"
-}
+import logging
+import os
+from tkinter.filedialog import askopenfilename
 
-with open(filename, "r") as file:
-    text = file.read()
+from gcloud import GCloud
+from gpt import GPT
+from ocr import OCR
 
-DATA = {
-    "q": text
-}
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-response = requests.post(URL, params = PARAMS, json=DATA)
-translated = response.json()["data"]["translations"][0]["translatedText"]
-decoded_text = html.unescape(translated)
-with open(f"{filename.split('.')[0]}-EN.txt", "w+", encoding="utf-8") as f:
-    f.write(decoded_text)
+log = logging.getLogger(__name__)
+
+if __name__ == "__main__":
+    filename = askopenfilename()
+    # if textfile already exists, skip OCR
+    txtfile = f"{filename.split('.')[0]}.txt"
+    if not os.path.isfile(txtfile):
+        ocr = OCR(filename)
+        ocr.build()
+        ocr.write()
+        filename = ocr.out_filename
+    else:
+        log.warn(f"{txtfile} already exists, skipping OCR")
+        filename = txtfile
+    gcloud = GCloud(filename)
+    gcloud.build()
+    gcloud.write()
+    gpt = GPT(filename)
+    gpt.build()
+    gpt.write()
+    filename = gpt.out_filename
+    gcloud = GCloud(filename)
+    gcloud.build()
+    gcloud.write()
