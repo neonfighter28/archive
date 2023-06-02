@@ -17,5 +17,7 @@ store google cloud & openai keys in
 .env as 
 
 openaiKey=
+
 openaiOrg=
+
 gCloudKey=
