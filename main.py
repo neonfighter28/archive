@@ -19,7 +19,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 log = logging.getLogger(__name__)
 
 if __name__ == "__main__":
-    filename = askopenfilename()
+    filename = askopenfilename()  # type: ignore
     # if textfile already exists, skip OCR
     txtfile = f"{filename.split('.')[0]}.txt"
     if not os.path.isfile(txtfile):

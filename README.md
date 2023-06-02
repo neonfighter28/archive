@@ -14,7 +14,7 @@ run with:
 python main.py
 ```
 store google cloud & openai keys in
-.env as 
+.env as
 
 openaiKey=
 
